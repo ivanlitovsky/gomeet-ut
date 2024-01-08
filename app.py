@@ -63,11 +63,6 @@ with st.sidebar:
 
 
 
-print("###")
-print(st.session_state['reader'])
-print(st.session_state['optin'])  
-
-
 reformated_list = None
 
 

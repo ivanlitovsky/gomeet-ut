@@ -36,7 +36,7 @@ def on_email_change():
 
 def find_email_in_firestore(collection_name, email):
     db = firestore.client()
-    query = db.collection(collection_name).where('email', '==', email).limit(1)
+    query = db.collection(collection_name).where(field_path='email', op_string='==', value=email).limit(1)
     matches = query.get()
     if matches:
         return matches[0].to_dict()
