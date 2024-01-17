@@ -1,16 +1,48 @@
 import streamlit as st
 import pandas as pd
-import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import firestore
+import os
 
-# Initialize Firebase Admin SDK
-cred = credentials.Certificate("firebase.json")
 
-if not firebase_admin._apps:
-    firebase_admin.initialize_app(cred)
 
+def on_optin_change(db):
+    print("NEW OPTIN CHANGE")
+    print(st.session_state['optin'])
+    db.table('survey_answers').upsert({'email': st.session_state['reader'], 'optin': st.session_state['optin']}).execute()
+    return
+
+def on_email_change(db):
+        if st.session_state['current_input'] != st.session_state['reader']:
+            # if the on_change function is called with a new email input
+
+            print("NEW EMAIL INPUT")
+            print("new input: ", st.session_state['current_input'])
+
+            if st.session_state['current_input'] is not None and st.session_state['current_input'] != "":
+                survey_data = find_email_in_db(db.table('survey_answers'), st.session_state['current_input'])
+                
+                if len(survey_data) == 0:
+                    st.session_state['reader'] = None
+                    db.table('login').insert({'email': st.session_state['current_input'], 'type': "NEW_LOGIN", 'success': False}).execute()
+                else:
+                    st.session_state['reader'] = st.session_state['current_input']
+                    st.session_state['survey_data'] = survey_data
+                    
+                    optin = get_optin(db, st.session_state['current_input'], survey_data)
+                    
+                    st.session_state['optin'] = optin
+                    db.table('login').insert({'email': st.session_state['current_input'], 'type': "NEW_LOGIN", 'success': True, 'optin': optin}).execute()
+            
+        
     
+
+
+
+
+def init_states():    
+    st.session_state['optin'] = False
+    st.session_state['reader'] = None
+    st.session_state['survey_data'] = None
+    st.session_state['matches'] = None
 
 def reformat_match_list(match_list):
     reformatted_data = []
@@ -24,33 +56,54 @@ def reformat_match_list(match_list):
     return reformatted_data
 
 
-def on_optin_change():
-    return
-
-def on_email_change():
-    return
-
-
-
-#### Firestore functions
-
-def find_email_in_firestore(collection_name, email):
-    db = firestore.client()
-    query = db.collection(collection_name).where(field_path='email', op_string='==', value=email).limit(1)
-    matches = query.get()
-    if matches:
-        return matches[0].to_dict()
+def distance_label(d):
+    result = {'label': '', 'color': ''}
+    if d <= 0.3:
+        result = {'label': 'Top 10% fit!', 'color': 'green'}
+    elif d <= 0.5:
+        result = {'label': 'Top 30% fit!', 'color': 'blue'}
     else:
-        return None
+        result = {'label': 'Top 50% fit!', 'color': 'orange'}
+
+    return result
 
 
-def update_firestore(collection_name, document_id, data):
-    if not document_id:
-        return
+#### Database functions
+
+def find_email_in_db(db_table, email):
+
+    survey_data = db_table.select("*").eq("email", email).execute()
+    if len(survey_data.data) == 0:
+        return []
     else:
-        db = firestore.client()
-        doc_ref = db.collection(collection_name).document(document_id)
-        if doc_ref.get().exists:
-            doc_ref.update(data)
+        return survey_data.data[0]
+
+
+def get_optin(db, email, data):
+    survey_data = data
+
+    if survey_data == None:
+        survey_data = find_email_in_db(db.table('survey_answers'), email)
+
+    optin = False
+
+    if survey_data is not None and len(survey_data) > 0:
+        optin = survey_data['optin']
+        if optin == None:
+            answer_a = "Professional"
+            answer_b = "In-person social"
+            answer_c = "Remote social"
+            answer_d = "Open to anything and everything"
+            answer_e = "I want to be part of the social graph"
+
+            optin = (
+                answer_a in survey_data['expected_relationships']
+                or answer_b in survey_data['expected_relationships']
+                or answer_c in survey_data['expected_relationships']
+                or answer_d in survey_data['expected_relationships']
+                or answer_e in survey_data['expected_relationships']
+            )
+
+    return optin
 
 
