@@ -1,6 +1,6 @@
 #streamlit packages
 import streamlit as st
-import streamlit_antd_components as sac
+#import streamlit_antd_components as sac
 
 #other packages
 import pandas as pd
