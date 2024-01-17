@@ -12,12 +12,10 @@ from match_info import get_user_info
 # Initialize DB
 import os
 import json
-from dotenv import load_dotenv
 from supabase import create_client, Client
 
-load_dotenv()
-url: str = os.getenv("SUPABASE_URL")
-key: str = os.getenv("SUPABASE_KEY")
+url: str = st.secrets.SUPABASE_URL
+key: str = st.secrets.SUPABASE_KEY
 supabase: Client = create_client(url, key)
 
 # Initialize session states

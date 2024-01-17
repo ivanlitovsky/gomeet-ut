@@ -11,10 +11,8 @@ from tools import *
 
 #OpenAI
 import json
-from dotenv import load_dotenv
-load_dotenv()
 from openai import OpenAI
-client = OpenAI()
+client = OpenAI(api_key=st.secrets.OPENAI_API_KEY,)
 
 
 
