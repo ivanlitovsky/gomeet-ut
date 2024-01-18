@@ -1,7 +1,3 @@
 streamlit
 supabase
-time
 openai
-pandas
-os
-json
