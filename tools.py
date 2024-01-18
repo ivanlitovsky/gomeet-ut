@@ -79,15 +79,12 @@ def find_email_in_db(db_table, email):
         return survey_data.data[0]
 
 
-def get_optin(db, email, data):
+def get_optin(data):
     survey_data = data
-
-    if survey_data == None:
-        survey_data = find_email_in_db(db.table('survey_answers'), email)
 
     optin = False
 
-    if survey_data is not None and len(survey_data) > 0:
+    if len(survey_data) > 0:
         optin = survey_data['optin']
         if optin == None:
             answer_a = "Professional"
@@ -107,3 +104,8 @@ def get_optin(db, email, data):
     return optin
 
 
+def get_summary_email(list, email):
+    for i, summary in enumerate(list):
+        if summary['email'] == email:
+            return summary
+    return None

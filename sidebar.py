@@ -22,13 +22,7 @@ def get_sidebar(db):
                 label_visibility="visible",
                 disabled=False,
                 placeholder="hello@mail.com",
-                #on_change = on_email_change(db),
-                #key = "current_input" 
             )
-
-            #st.markdown(f"""
-            #    <small>Survey <a href="{survey_url}">link</a></small>
-            #    """, unsafe_allow_html=True)
                       
 
             st.write(' ')
@@ -36,9 +30,6 @@ def get_sidebar(db):
             optin_button = st.toggle(
                     label = "Opt-in",
                     value = False,
-                    #value = st.session_state['optin'],
-                    #on_change = on_optin_change(db),
-                    #key = "optin"
             )
 
             st.caption('By opting-in you accept to become visible to other UT members.')
@@ -75,7 +66,6 @@ def get_sidebar(db):
                         st.session_state['reader'] = email_input
                         if optin_button == False:
                             db.table('login').insert({'email': email_input, 'type': "NEW_LOGIN", 'success': True, 'optin': False}).execute()
-                            db.table('survey_answers').upsert({'email': email_input, 'optin': False}).execute()
                             st.session_state['optin'] = False
                             
                             my_bar.progress(100, text=progress_text)

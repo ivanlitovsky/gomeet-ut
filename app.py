@@ -68,7 +68,6 @@ if st.session_state['reader'] is None or st.session_state['optin'] == False:
              
 else:
     active_reader = st.session_state['reader']
-    st.write(f"Welcome {active_reader}!")
 
     matched_user_data = supabase.table('top_matches').select("*").eq("email", active_reader).execute()
     matched_user_info = None
@@ -77,26 +76,39 @@ else:
 
     if matched_user_info is not None:
 
-        #remove opt-out users
-        optin_matched_users = []
+        #load matched users data
+        db_filter = []
         for i, match in enumerate(matched_user_info):
-            optin = get_optin(supabase, match['matched_email'], None)
+            db_filter.append(match['matched_email'])
+
+        all_matches_survey_data = supabase.table('survey_answers').select("*").in_('email', db_filter).execute()
+
+        #remove opt-out users
+        st.session_state['matches_survey_data'] = []
+        for i, match in enumerate(all_matches_survey_data.data):
+            optin = get_optin(match)
             if optin == True:
-                optin_matched_users.append(match)
+                st.session_state['matches_survey_data'].append(match)
 
+        #display tabs
         tabs_list = []
+        matched_email_list = [st.session_state['reader']]
 
-        for i, match in enumerate(optin_matched_users):
+        for i, match in enumerate(st.session_state['matches_survey_data']):
             count = i+1
             parts_to_print = f"👤 reader {count}"
             tabs_list.append(parts_to_print)
+            matched_email_list.append(match['email'])
+
+        #load all summaries of matched emails
+        summaries_list_full = supabase.table('summaries').select("*").in_('email', matched_email_list).execute()
 
         st.markdown(f"Meet <span style='color:red;'><b>{len(tabs_list)}</b></span> other UT readers similar to you: ", unsafe_allow_html=True)
 
         tabs = st.tabs(tabs_list)
 
-        for i, match in enumerate(optin_matched_users):
+        for i, match in enumerate(st.session_state['matches_survey_data']):
             with tabs[i]:
-                get_user_info(supabase, i, match)
+                get_user_info(supabase, i, match, summaries_list_full.data)
 
 
