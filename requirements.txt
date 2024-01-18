@@ -1,9 +1,7 @@
 streamlit
-streamlit_antd_components
-pandas
-os
-json
-dotenv
 supabase
 time
 openai
+pandas
+os
+json
