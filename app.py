@@ -64,7 +64,7 @@ reformated_list = None
 
 
 if st.session_state['reader'] is None or st.session_state['optin'] == False:
-    st.write('Please enter your email and opt-in')
+    st.write('Please enter your email and opt-in using the left panel')
              
 else:
     active_reader = st.session_state['reader']
