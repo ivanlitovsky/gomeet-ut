@@ -120,5 +120,9 @@ def plot_map(email, db):
     ))
     fig.update_layout(margin=dict(t=10))
 
+    # Disable zooming in and out on the graph
+    fig.update_layout(
+        uirevision=True  # Ensure that the configuration is not overridden
+    )
 
-    st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+    st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False, 'Zoom' : False, 'staticPlot': True})
