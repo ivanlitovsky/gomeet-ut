@@ -29,7 +29,7 @@ def get_sidebar(db):
 
             optin_button = st.toggle(
                     label = "Opt-in",
-                    value = False,
+                    value = True,
             )
 
             st.caption('By opting-in you accept to become visible to other UT members.')

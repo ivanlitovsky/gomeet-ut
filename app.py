@@ -119,34 +119,9 @@ else:
 
         st.markdown(f"Meet <span style='color:red;'><b>{len(tabs_list)}</b></span> other UT readers similar to you: ", unsafe_allow_html=True)
 
-        #tabs = st.tabs(tabs_list)
+        tabs = st.tabs(tabs_list)
 
-        #for i, match in enumerate(st.session_state['matches_survey_data']):
-            #with tabs[i]:
-             #   st.write("hello")
-                #get_user_info(supabase, i, match, summaries_list_full.data)
-
-        st.subheader(f"👤 Reader **{st.session_state['current_user']+1}**/{len(tabs_list)}")
-
-        with st.container():
-            col1, col2, col3 = st.columns([1,1,2])
-            with col2:
-                next = st.button("Next >>",  type="primary")
-            with col1:
-                previous = st.button("<< Previous")
-
-        if next:
-            st.session_state['current_user'] += 1
-            if st.session_state['current_user'] >= len(tabs_list):
-                st.session_state['current_user'] = 0
-
-        if previous:
-            st.session_state['current_user'] -= 1
-            if st.session_state['current_user'] == 0:
-                st.session_state['current_user'] = len(tabs_list) - 1
-
-        st.write(" ")
-        st.write(" ")
-        get_user_info(supabase, st.session_state['current_user'], st.session_state['matches_survey_data'][st.session_state['current_user']], summaries_list_full.data)
-
+        for i, match in enumerate(st.session_state['matches_survey_data']):
+            with tabs[i]:
+                get_user_info(supabase, i, match, summaries_list_full.data)
 
