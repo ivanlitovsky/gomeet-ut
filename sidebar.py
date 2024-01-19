@@ -45,39 +45,40 @@ def get_sidebar(db):
 
                 if (email_input == ""):
                     my_bar.progress(100, text=progress_text)
-                    time.sleep(0.5)
+                    time.sleep(0.1)
                     st.session_state['reader'] = None
                     my_bar.empty()
                     st.write("❌ Please write your email!")
                 else:
                     my_bar.progress(20, text=progress_text)
-                    survey_data = find_email_in_db(db.table('survey_answers'), email_input)
+                    survey_data = find_email_in_db(db.table('survey_answers'), email_input.lower())
                     my_bar.progress(70, text=progress_text)
                     time.sleep(0.1)
                     if len(survey_data) == 0:
-                        db.table('login').insert({'email': email_input, 'type': "NEW_LOGIN", 'success': False}).execute()
+                        db.table('login').insert({'email': email_input.lower(), 'type': "NEW_LOGIN", 'success': False}).execute()
                         my_bar.progress(100, text=progress_text)
                         st.session_state['reader'] = None
-                        time.sleep(1)
+                        time.sleep(0.1)
                         my_bar.empty()
                         st.write("❌ Email not found")
                     else:
                         my_bar.progress(85, text=progress_text)
                         time.sleep(0.1)
                         st.session_state['survey_data'] = survey_data
-                        st.session_state['reader'] = email_input
+                        st.session_state['reader'] = email_input.lower()
                         if optin_button == False:
-                            db.table('login').insert({'email': email_input, 'type': "NEW_LOGIN", 'success': True, 'optin': False}).execute()
+                            db.table('login').insert({'email': email_input.lower(), 'type': "NEW_LOGIN", 'success': True, 'optin': False}).execute()
                             st.session_state['optin'] = False
                             
                             my_bar.progress(100, text=progress_text)
-                            time.sleep(1)
+                            time.sleep(0.3)
                             my_bar.empty()
                             
-                            st.write("❌ Please opt-in to see other UT members!")
+                            st.write('❌ Please <span style="color:red; font-weight:bold;">opt-in</span> to see other UT members!', unsafe_allow_html=True)
+
                         else:
-                            db.table('login').insert({'email': email_input, 'type': "NEW_LOGIN", 'success': True, 'optin': True}).execute()
-                            db.table('survey_answers').upsert({'email': email_input, 'optin': True}).execute()
+                            db.table('login').insert({'email': email_input.lower(), 'type': "NEW_LOGIN", 'success': True, 'optin': True}).execute()
+                            db.table('survey_answers').upsert({'email': email_input.lower(), 'optin': True}).execute()
                             st.session_state['optin'] = True
 
                             my_bar.progress(100, text=progress_text)
