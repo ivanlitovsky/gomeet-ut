@@ -46,6 +46,7 @@ def get_sidebar(db):
                 if (email_input == ""):
                     my_bar.progress(100, text=progress_text)
                     time.sleep(0.5)
+                    st.session_state['reader'] = None
                     my_bar.empty()
                     st.write("❌ Please write your email!")
                 else:
@@ -56,6 +57,7 @@ def get_sidebar(db):
                     if len(survey_data) == 0:
                         db.table('login').insert({'email': email_input, 'type': "NEW_LOGIN", 'success': False}).execute()
                         my_bar.progress(100, text=progress_text)
+                        st.session_state['reader'] = None
                         time.sleep(1)
                         my_bar.empty()
                         st.write("❌ Email not found")

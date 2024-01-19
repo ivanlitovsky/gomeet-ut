@@ -7,6 +7,7 @@ import pandas as pd
 
 #custom functions
 from tools import *
+from map import *
 from sidebar import get_sidebar
 from match_info import get_user_info
 # Initialize DB
@@ -42,7 +43,7 @@ print("optin: ", st.session_state['optin'])
 ## HEADER
 ## --------------------------------
 
-st.header('Uncharted Territory Network')
+st.header('Uncharted Territories Network')
 
 ## --------------------------------
 ## SIDEBAR
@@ -65,6 +66,9 @@ reformated_list = None
 
 if st.session_state['reader'] is None or st.session_state['optin'] == False:
     st.write('Please enter your email and opt-in using the left panel')
+    url = "https://docs.google.com/forms/d/e/1FAIpQLSfdX1OYcs4nK5y7MKq4LpP8kwZU6YHqgI7fw3koh1PV4HKdIA/viewform"
+    st.markdown(f"If you didn't fill the survey, you can do it here: [Survey Link]({url})", unsafe_allow_html=True)
+    st.caption("Note: once you filled the survey, it takes around 24h to be processed.")
              
 else:
     active_reader = st.session_state['reader']
@@ -75,6 +79,8 @@ else:
         matched_user_info = json.loads(matched_user_data.data[0]['top_matches'])
 
     if matched_user_info is not None:
+        #show map
+        plot_map(st.session_state['reader'], supabase)
 
         #load matched users data
         db_filter = []
