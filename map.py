@@ -54,7 +54,7 @@ def plot_map(email, db):
     cluster_colors = {
         0: '#0d0788',
         1: '#7d08a6',
-        2: '#cc477a',
+        2: '#fa4289',
         3: '#f99640',
         4: '#f2f921'
     }
@@ -63,12 +63,12 @@ def plot_map(email, db):
         0: 'Engineers & Tech Leaders',
         1: 'Medical and Academic Experts ',
         2: 'Geopolitics & Social Sciences Professionals',
-        3: 'Entrepreneurs',
-        4: 'Curious & versatile minds'
+        3: 'Entrepreneurs & Business Leaders',
+        4: 'Multidisciplinary & versatile minds'
     }
 
     # Define marker colors with transparency for non-highlighted points and non-transparent for highlighted points
-    colors = [hex_to_rgba(cluster_colors[i], alpha=0.6) for i in range(num_clusters)]  # 60% transparent
+    colors = [hex_to_rgba(cluster_colors[i], alpha=0.7) for i in range(num_clusters)]  # 60% transparent
     colors_non_transparent = [hex_to_rgba(cluster_colors[i], alpha=1) for i in range(num_clusters)]  # Non-transparent
 
     # Plot using Plotly
@@ -102,6 +102,23 @@ def plot_map(email, db):
     ))
 
     # Update layout and plot
-    fig.update_layout(height=500, legend_title_text='Cluster')
+    fig.update_layout(height=400, legend_title_text='Cluster')
     #fig.update_traces(textfont_size=15)
+    fig.update_xaxes(showline=False, showticklabels=False, showgrid=False)
+    fig.update_yaxes(showline=False, showticklabels=False, showgrid=False)
+
+    # Update the legend position to be below the chart
+    fig.update_layout(legend=dict(
+        x=0.5,  # Center the legend horizontally
+        y=-0.1,  # Position the legend below the chart
+        xanchor='center',  # Center the legend horizontally
+        yanchor='top',  # Anchor the legend to the top
+        bgcolor='rgba(255, 255, 255, 0.5)',  # Set a background color for the legend
+        bordercolor='rgba(0, 0, 0, 0.5)',  # Set a border color for the legend
+        orientation='h',
+        title=''
+    ))
+    fig.update_layout(margin=dict(t=10))
+
+
     st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})

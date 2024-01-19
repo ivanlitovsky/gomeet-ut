@@ -8,8 +8,8 @@ import pandas as pd
 #custom functions
 from tools import *
 from map import *
-from sidebar import get_sidebar
-from match_info import get_user_info
+from sidebar import *
+from match_info import *
 # Initialize DB
 import os
 import json
@@ -81,6 +81,7 @@ else:
     if matched_user_info is not None:
         #show map
         plot_map(st.session_state['reader'], supabase)
+        st.divider()
 
         #load matched users data
         db_filter = []
