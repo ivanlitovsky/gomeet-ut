@@ -6,6 +6,7 @@ import plotly.graph_objs as go
 import plotly.express as px
 import json
 import streamlit as st
+import time
 
 
 # Function to convert hex color to RGBA
@@ -15,9 +16,12 @@ def hex_to_rgba(hex_color, alpha=1.0):
     return 'rgba(' + ', '.join(str(int(hex_color[i:i + lv // 3], 16)) for i in range(0, lv, lv // 3)) + f', {alpha})'
 
 
-def plot_map(email, db):
+def plot_map(email, db, my_bar, progress_text):
 
     embeddings_raw = db.table('embeddings').select("*").execute()
+    my_bar.progress(60, text=progress_text)
+    time.sleep(0.01)
+
     embeddings = []
     for data in embeddings_raw.data:
         embeddings.append({
@@ -37,12 +41,18 @@ def plot_map(email, db):
     # Convert embeddings_matrix to a NumPy array
     embeddings_matrix = np.array(embeddings_matrix)
 
+    my_bar.progress(70, text=progress_text)
+    time.sleep(0.01)
+
     # Perform KMeans clustering
     num_clusters = 5
 
     # Perform PCA
     pca = PCA(n_components=2)
     embeddings_2d = pca.fit_transform(embeddings_matrix)
+
+    my_bar.progress(80, text=progress_text)
+    time.sleep(0.01)
 
     # Create a DataFrame for the reduced embeddings
     df = pd.DataFrame(embeddings_2d, columns=['x', 'y'])
@@ -72,6 +82,9 @@ def plot_map(email, db):
     colors_non_transparent = [hex_to_rgba(cluster_colors[i], alpha=1) for i in range(num_clusters)]  # Non-transparent
 
     # Plot using Plotly
+
+    my_bar.progress(90, text=progress_text)
+    time.sleep(0.01)
 
     fig = go.Figure()
 
@@ -124,5 +137,9 @@ def plot_map(email, db):
     fig.update_layout(
         uirevision=True  # Ensure that the configuration is not overridden
     )
+
+    my_bar.progress(100, text=progress_text)
+    time.sleep(0.5)
+    my_bar.empty()
 
     st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False, 'Zoom' : False, 'staticPlot': True})

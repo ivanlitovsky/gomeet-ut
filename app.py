@@ -75,17 +75,22 @@ if st.session_state['reader'] is None or st.session_state['optin'] == False:
 
              
 else:
+    progress_text = "Loading data..."
+    my_bar = st.progress(0, text=progress_text)
+    time.sleep(0.01)
+
     active_reader = st.session_state['reader']
 
     matched_user_data = supabase.table('top_matches').select("*").eq("email", active_reader).execute()
+    
+    my_bar.progress(10, text=progress_text)
+    time.sleep(0.01)
+    
     matched_user_info = None
     if len(matched_user_data.data) > 0:
         matched_user_info = json.loads(matched_user_data.data[0]['top_matches'])
 
     if matched_user_info is not None:
-        #show map
-        plot_map(st.session_state['reader'], supabase)
-        st.divider()
 
         #load matched users data
         db_filter = []
@@ -93,6 +98,9 @@ else:
             db_filter.append(match['matched_email'])
 
         all_matches_survey_data = supabase.table('survey_answers').select("*").in_('email', db_filter).execute()
+
+        my_bar.progress(30, text=progress_text)
+        time.sleep(0.01)
 
         #remove opt-out users
         st.session_state['matches_survey_data'] = []
@@ -116,6 +124,16 @@ else:
 
         #load all summaries of matched emails
         summaries_list_full = supabase.table('summaries').select("*").in_('email', matched_email_list).execute()
+
+        my_bar.progress(50, text=progress_text)
+        time.sleep(0.01)
+
+        time.sleep(0.3)
+        
+
+        #show map
+        plot_map(st.session_state['reader'], supabase, my_bar, progress_text)
+        st.divider()
 
         st.markdown(f"Meet <span style='color:red;'><b>{len(tabs_list)}</b></span> other UT readers similar to you: ", unsafe_allow_html=True)
 
