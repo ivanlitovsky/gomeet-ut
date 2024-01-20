@@ -73,7 +73,7 @@ def plot_map(email, db, my_bar, progress_text):
         #0: 'Engineers & Tech Leaders',
         0: 'Business Leaders',
         #1: 'Medical and Academic Experts ',
-        1: 'Medical & Academic Experts',
+        1: 'Academics, Researchers & Medical Professionals',
         #2: 'Geopolitics & Social Sciences Professionals',
         2: 'Geopolitics & Global Issues Experts',
         #3: 'Entrepreneurs & Business Leaders',
