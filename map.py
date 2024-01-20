@@ -70,11 +70,16 @@ def plot_map(email, db, my_bar, progress_text):
     }
 
     cluster_names = {
-        0: 'Engineers & Tech Leaders',
-        1: 'Medical and Academic Experts ',
-        2: 'Geopolitics & Social Sciences Professionals',
-        3: 'Entrepreneurs & Business Leaders',
-        4: 'Multidisciplinary & versatile minds'
+        #0: 'Engineers & Tech Leaders',
+        0: 'Business Leaders',
+        #1: 'Medical and Academic Experts ',
+        1: 'Multidisciplinary & versatile minds',
+        #2: 'Geopolitics & Social Sciences Professionals',
+        2: 'Humanities and Sciences Academics',
+        #3: 'Entrepreneurs & Business Leaders',
+        3: 'Engineers & Entrepreneurs',
+        #4: 'Multidisciplinary & versatile minds'
+        4: 'Climate, Geopolitics & Global Issues Experts'
     }
 
     # Define marker colors with transparency for non-highlighted points and non-transparent for highlighted points
